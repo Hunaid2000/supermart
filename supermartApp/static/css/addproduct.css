@@ -1,0 +1,143 @@
+ .home-container {
+  width: 100%;
+  display: flex;
+  overflow: auto;
+  height: 100vh;
+  align-items: center;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.home-container1 {
+  width: 100%;
+  height: 720px;
+  display: flex;
+  align-self: center;
+  align-items: center;
+  justify-content: center;
+}
+
+.divcontainer{
+  width: 70vw;
+  height: 70vh;
+} 
+
+
+.home-form,.home-form1  {
+  font-family: gilroy;
+  width:400px;
+  height: 100%;
+  display:flex;
+  flex-direction: column;
+  position: relative;
+  align-self: center;
+  border-color: var(--dl-color-gray-black);
+  border-width: 1px;
+  background-color: var(--dl-color-gray-white);
+}
+
+.home-form{
+  border-radius: 20px 20px 20px 20px;
+  border-color:  #167A46;
+  border-color:transparent;
+  box-shadow: 0px 1px 6px 1px #00000073;
+}
+
+.home-form1{
+  background-color: #167A46;
+  border-radius: 20px 20px 20px 20px;
+  border-left: none;
+  border-color:transparent;
+  box-shadow: -4px 0px 6px 1px #00000073;
+}
+
+
+.home-form h1,.home-form1 h1 {
+  font-family: gilroy;
+  padding: 3rem ;
+  font-size: 1.8rem;
+  font-weight: 600;
+  color : rgb(35, 31, 32);
+  margin-bottom: 1rem;
+  text-align: center;
+  justify-content: center;
+}
+
+.home-form1 h1 {
+  color : white;
+}
+
+.radiobuttons{
+  font-family: gilroy;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  padding: 15px;
+  gap: 25px;
+}
+
+.home-form input, .home-form1 input{  
+  width: 70%;
+  justify-content: center;
+  align-self: center;
+  position: relative;
+  top: -10px;
+  margin: 4px;
+  border:none;
+  border-bottom:1px solid #167A46;
+  border-radius: 0;
+  color: black;
+  background-color: transparent;
+  outline: none;
+  text-align: center;
+}
+
+.home-form1 input{
+  border-bottom:1px solid rgb(35, 31, 32, 0.7);
+  color:white;
+}
+
+.home-form input::placeholder{
+  color: rgb(35, 31, 32,0.7);
+  text-align: center;
+
+}.home-form1 input::placeholder{
+  color: rgb(255, 255, 255,0.7);
+  text-align: center;
+}
+
+.button{
+  margin: 10px auto;
+  border-radius: 8px;
+}
+
+.home-button{
+  display: flex;  
+  justify-content: center;
+  align-items: center;
+  background-color: #167A46;
+  border-color:transparent;
+}
+.home-button1{
+  margin-top: 80px;  
+  display: flex;  
+  justify-content: center;
+  align-items: center;
+  background-color: white;
+  border-color:transparent;
+}
+
+.home-text1, .home-text4 {
+	font-family: gilroy;
+  color: white;
+  align-self: center;
+  font-style: normal;
+  text-align: center;
+  justify-content: center;
+  align-items: center;
+}
+
+.home-text4 {
+  color: rgb(35, 31, 32);
+}

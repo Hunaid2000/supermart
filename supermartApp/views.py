@@ -33,3 +33,7 @@ def accounts(request):
         else:
             messages.error(request, 'Incorrect Email/Password')    
     return render(request, 'accounts.html')
+def registerstore(request):
+    return render(request, 'registerstore.html')
+def addproduct(request):
+    return render(request, 'addproduct.html')
