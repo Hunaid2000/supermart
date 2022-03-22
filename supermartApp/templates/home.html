@@ -1,15 +1,5 @@
-<!DOCTYPE html>
-<html>
-<head>
-    <title>SuperMart</title>
-</head>
-<body>
+{% extends "base.html" %}
+
+{% block content %}
     <h1>Home Page</h1>
-    {% if not request.session.user_id %}
-    <a href="{% url 'accounts' %}">Register</a>
-    <a href="{% url 'accounts' %}">Login</a>
-    {% else %}
-    <a href="{% url 'logout' %}">Logout</a>
-    {% endif %}
-</body>
-</html>
+{% endblock content %}
