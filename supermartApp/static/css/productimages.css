@@ -1,0 +1,46 @@
+.card {
+    box-shadow: 0px 2px 6px 3px rgb(35, 31, 32, 0.3);
+    max-width: 250px;
+    margin: auto;
+    text-align: center;
+    background-color: transparent;
+    border-radius: 10px;
+  }
+  
+  .price {
+    color: rgb(35, 31, 32);
+    font-size: 18px;  
+    padding: 2px;
+  }
+  
+  .productlists li {
+    display: inline;
+    float: left;
+}
+  
+  h1 {
+    color: rgb(35, 31, 32);
+    font-size: 22px;  
+    padding: 2px;
+  }
+  
+  .productimg{
+    padding: 8px;
+    height: 100%;
+    width: 100%;
+    border-radius: 18px;
+  }
+  
+  .card button {
+    border: none;
+    outline: 0;
+    padding: 12px;
+    color: white;  
+    background-color: #167A46;
+    text-align: center;
+    height: 100%;
+    width: 100%;
+    font-size: 16px;
+    border-bottom-left-radius: 10px;
+    border-bottom-right-radius: 10px;
+  }

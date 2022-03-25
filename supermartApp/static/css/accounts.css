@@ -107,6 +107,8 @@
   .button{
     margin: 10px auto;
     border-radius: 8px;
+    padding: 0.5rem 1rem;  
+    font-size: 100%;
   }
   
   .home-button{
@@ -138,4 +140,3 @@
   .home-text4 {
     color: rgb(35, 31, 32);
   }
-  

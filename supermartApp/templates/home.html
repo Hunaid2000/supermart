@@ -1,5 +1,52 @@
 {% extends "base.html" %}
+{% load static %}
+
+{% block head %}
+    <link rel="stylesheet" href="{% static 'css/productimages.css' %}" />
+{% endblock head %}
 
 {% block content %}
-    <h1>Home Page</h1>
+    <script >
+    function selectImages() {
+        let allbuttons = document.querySelectorAll('input[type=radio]');
+        allbuttons.forEach(element => {
+            if (element.checked) {
+                document.getElementById(element.id).style.display = 'block';
+            } 
+            else {
+                element.checked = false
+                document.getElementById(element.id).style.display = 'none';
+            }           
+        });
+    }
+    </script>
+    <h1 style="text-align: center; margin: 10px;">Products</h1>
+    {% if images %}
+        <div style="display: flex;">
+        {% for img in images %}           
+            <script>
+                selectImages();
+            </script>
+            {% ifchanged img.product_id %}
+                <div class="card">        
+                {% for i in images %}
+                    {% if i.product_id == img.product_id %}
+                        <img id="{{ i.pk }}" src="{{ i.image.url }}" style="display: none;" class="productimg">
+                    {% endif %}
+                {% endfor %}
+                {% for i in images %}
+                    {% if i.product_id == img.product_id %}
+                        <input type="radio" id="{{ i.pk }}" name="{{ img.pk }}" onclick="selectImages();" checked/>
+                    {% endif %}
+                {% endfor %}
+            {% endifchanged %}
+            {% ifchanged img.product_id %}
+                <h1>{{ img.product.name }}</h1>
+                <p class="price">${{ img.product.price }}</p>
+                <p><button>Add to Cart</button></p>
+                </div>
+            {% endifchanged %}                    
+        {% endfor %}
+        </div>
+    {% endif %}
 {% endblock content %}
