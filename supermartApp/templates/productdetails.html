@@ -1,0 +1,68 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block head %}
+    <link rel="stylesheet" href="{% static 'css/productdetails.css' %}" />
+{% endblock head %}
+
+{% block content %}
+    <script >
+    function selectImages() {
+        let allbuttons = document.querySelectorAll('input[type=radio]');
+        allbuttons.forEach(element => {
+            if (element.checked) {
+                document.getElementById(element.id).style.display = 'block';
+            } 
+            else {
+                element.checked = false
+                document.getElementById(element.id).style.display = 'none';
+            }           
+        });
+    }
+    </script>
+
+    <div class="container">
+
+        <div class="left">
+            <div class="card">
+                {% if images %}        
+                    {% for img in images %}           
+                        <script>
+                            selectImages();
+                        </script>
+                        {% ifchanged img.product_id %}       
+                            {% for i in images %}
+                                {% if i.product_id == img.product_id %}
+                                    <img id="{{ i.pk }}" src="{{ i.image.url }}" class="productimg">
+                                {% endif %}
+                            {% endfor %}
+                            {% for i in images %}
+                                {% if i.product_id == img.product_id %}
+                                    <input type="radio" id="{{ i.pk }}" name="{{ img.pk }}" onclick="selectImages();" checked/>
+                                {% endif %}
+                            {% endfor %}
+                        {% endifchanged %}                 
+                    {% endfor %}        
+                {% endif %}
+            </div>
+        </div>
+
+        <div class="right">
+            {% if product %}
+                {% for p in product %}
+                    <h1>{{ p.name }}</h1>
+                    <p style="opacity: 80%; font-size: 20px;">{{ p.brand }}</p>
+                    <p style="text-align: justify; margin-top: 10px; font-size: 18px;">{{ p.description }}</p>
+                    <p class="price">${{ p.price }}</p>
+                    <form class="home-form" action="quantity" action="post">
+                        {% csrf_token %}
+                        Quantity  <input type="number" value="1" min="1" max="100"/>
+                        <p><button>Add to Cart</button></p>
+                    </form>
+                {% endfor %}
+            {% endif %}            
+        </div>
+
+    </div>
+    
+{% endblock content %}

@@ -31,7 +31,7 @@
                 <div class="card">        
                 {% for i in images %}
                     {% if i.product_id == img.product_id %}
-                        <img id="{{ i.pk }}" src="{{ i.image.url }}" style="display: none;" class="productimg">
+                        <img id="{{ i.pk }}" src="{{ i.image.url }}" class="productimg">
                     {% endif %}
                 {% endfor %}
                 {% for i in images %}
@@ -43,7 +43,7 @@
             {% ifchanged img.product_id %}
                 <h1>{{ img.product.name }}</h1>
                 <p class="price">${{ img.product.price }}</p>
-                <p><button>Add to Cart</button></p>
+                <p><a href="/supermartApp/product/{{ img.product_id }}"><button>View</button></a></p>
                 </div>
             {% endifchanged %}                    
         {% endfor %}

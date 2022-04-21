@@ -80,3 +80,8 @@ def addproduct(request):
             productImage.save()
     stores = Store.objects.filter(seller_id=request.session['user_id'])
     return render(request, 'addproduct.html', {'stores':stores})
+
+def productdetails(request, id):
+    product = Product.objects.filter(pk=id)
+    images = ProductImages.objects.filter(product_id=id)  
+    return render(request, 'productdetails.html', {'product':product, 'images':images})
