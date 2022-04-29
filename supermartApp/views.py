@@ -1,12 +1,11 @@
 from django.shortcuts import render, redirect
 from django.contrib import messages
-from supermartApp.models import Account, Product, ProductImages, Store
+from supermartApp.models import Account, Product, ProductImages, Store, Cart, Item
 
 
 def home(request):
-    if 'user_id' not in request.session:
-        images = ProductImages.objects.all()
-    elif 'is_seller' in request.session and request.session['is_seller'] == 1:
+    images = ProductImages.objects.all()
+    if 'is_seller' in request.session and request.session['is_seller'] == 1:
         images = ProductImages.objects.filter(product__store__seller_id=request.session['user_id'])  
     return render(request, 'home.html', {'images':images})
 
@@ -25,6 +24,9 @@ def accounts(request):
         is_seller = request.POST['is_seller']
         account = Account(name=name, email=email, password=password, is_seller=is_seller)
         account.save()  
+        if is_seller == 0:
+            cart = Cart(user=account, total=0)
+            cart.save()
     elif request.method == 'POST' and 'login' in request.POST:
         email = request.POST['email']
         password = request.POST['password']
@@ -83,5 +85,26 @@ def addproduct(request):
 
 def productdetails(request, id):
     product = Product.objects.filter(pk=id)
-    images = ProductImages.objects.filter(product_id=id)  
+    images = ProductImages.objects.filter(product_id=id)
+    if request.method == 'POST':
+        quantity = request.POST['quantity']  
+        quantity = int(quantity)  
+        cart = Cart.objects.get(pk=request.session['user_id'])  
+        product_item = Product.objects.get(pk=id)
+        item_total = quantity * product_item.price
+        item = Item(product=product_item, quantity=quantity, item_total=item_total, cart=cart)
+        item.save() 
+        messages.success(request, "Item added to Cart")
     return render(request, 'productdetails.html', {'product':product, 'images':images})
+
+def cart(request):
+    if request.method == 'POST' and 'delete' in request.POST:
+        product_id = request.POST['delete'] 
+        item = Item.objects.get(product_id=product_id)
+        item.delete()
+        messages.success(request, "Item removed from Cart")
+    elif request.method == 'POST' and 'next' in request.POST:
+        return redirect('home')
+    images = ProductImages.objects.all()
+    cartItems = Item.objects.filter(cart_id=request.session['user_id'])
+    return render(request, 'cart.html', {'images':images, 'cartItems':cartItems})

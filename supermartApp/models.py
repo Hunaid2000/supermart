@@ -26,3 +26,13 @@ class Product(models.Model):
 class ProductImages(models.Model):
     image = models.ImageField(upload_to="product_images/")
     product = models.ForeignKey(Product, on_delete=models.CASCADE)
+
+class Cart(models.Model):
+    user = models.OneToOneField(Account, on_delete=models.CASCADE)
+    total = models.FloatField(blank=True)
+
+class Item(models.Model):
+    product = models.ForeignKey(Product, on_delete=models.CASCADE)
+    quantity = models.IntegerField(default=1)
+    item_total = models.FloatField(blank=True)
+    cart = models.ForeignKey(Cart, on_delete=models.CASCADE)
