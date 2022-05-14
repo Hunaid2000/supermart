@@ -36,3 +36,17 @@ class Item(models.Model):
     quantity = models.IntegerField(default=1)
     item_total = models.FloatField(blank=True)
     cart = models.ForeignKey(Cart, on_delete=models.CASCADE)
+
+class Order(models.Model):
+    cart = models.ForeignKey(Cart, on_delete=models.CASCADE)
+    shipping_address = models.CharField(max_length=100)
+    shipping_option = models.CharField(max_length=50)
+    payment_option = models.CharField(max_length=50)
+    shipping_fee = models.FloatField(blank=True)
+    order_total = models.FloatField(blank=True)
+
+class CardDetails(models.Model):
+    user = models.OneToOneField(Account, on_delete=models.CASCADE)
+    accountname = models.CharField(max_length=100)
+    cvv = models.IntegerField()
+    expiry_date = models.DateField()

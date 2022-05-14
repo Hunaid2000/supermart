@@ -1,0 +1,100 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block head %}
+    <link rel="stylesheet" href="{% static 'css/checkout.css' %}" />
+{% endblock head %}
+
+{% block content %}
+    <script >
+        function checkRadioButtons() {
+            if (document.getElementById('card').checked) {
+                document.getElementById('paymentmethodselection').style.display = 'block';
+            } 
+            else {
+                document.getElementById('paymentmethodselection').style.display = 'none';
+            }
+        }
+    </script>
+
+    <div class="home-container">
+        <h1 style="color: rgb(35, 31, 32); margin-top: 20px;">Checkout</h1>
+        <div class="divcontainer">
+            <div class="home-container1">
+                <form name="checkout" class="home-form"  method="post">            
+                    {% csrf_token %}
+                    <h1>Payment Section</h1>
+                    <div class="radiobuttons">
+                        <div>
+                            <input type="radio" id="card" name="payment_option" value="Card" onclick="checkRadioButtons();" />                
+                            <label for="card">Credit/Debit Card</label>
+                        </div>
+                        <div>
+                            <input type="radio" id="cod" name="payment_option" value="COD" onclick="checkRadioButtons();" />                
+                            <label for="cod">Cash On Delivery</label>
+                        </div>
+                    </div>
+
+                    <div id="paymentmethodselection" style="display: none; text-align: center;">
+                        <input
+                        type="text"
+                        name="name"
+                        placeholder="Account/Card Holder Name"
+                        class="home-textinput2 input"
+                        />
+                        <input
+                        type="number"
+                        name="cvv"
+                        placeholder="CVV"
+                        class="home-textinput2 input"
+                        />
+                        <input
+                        type="month"
+                        name="expdate"
+                        placeholder="Expiry Date"
+                        class="home-textinput2 input"
+                        />       
+                    </div>     
+                    
+                    <h1>Shipping Section</h1>                
+                    <input
+                        type="text"
+                        name="shipping_address"
+                        placeholder="Address"
+                        class="home-textinput2 input"
+                    />
+                    
+                    <div class="radiobuttons">
+                        <div>
+                            <input type = "radio" id = "standard" name="shipping_option" value="Standard"/>
+                            <label for="standard">
+                                Standard Shipping
+                                (5-10 Days)
+                                Price:$5.00
+                            </label>  
+                        </div>
+                        <div>
+                            <input type = "radio" id = "priority" name="shipping_option" value="Priority"/>
+                            <label for="standard">
+                                Priority Shipping
+                                (1-2 Days)
+                                Price:$10.00
+                            </label>
+                        </div>
+                        <div>
+                            <input type = "radio" id = "express" name="shipping_option" value="Express"/>
+                            <label for="standard">
+                                Express Shipping
+                                (Overnight)
+                                Price:$15.00
+                            </label>
+                        </div>
+                    </div>  
+                    <button class="home-button button">
+                        <span class="home-text1">Order</span>
+                    </button>
+                </form>
+            </div>        
+        </div>
+    </div>
+{% endblock content %}

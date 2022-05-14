@@ -1,6 +1,6 @@
 from django.shortcuts import render, redirect
 from django.contrib import messages
-from supermartApp.models import Account, Product, ProductImages, Store, Cart, Item
+from supermartApp.models import Account, Product, ProductImages, Store, Cart, Item, Order, CardDetails
 
 
 def home(request):
@@ -92,6 +92,8 @@ def productdetails(request, id):
         cart = Cart.objects.get(pk=request.session['user_id'])  
         product_item = Product.objects.get(pk=id)
         item_total = quantity * product_item.price
+        total = item_total + cart.total
+        Cart.objects.filter(pk=request.session['user_id']).update(total=total)
         item = Item(product=product_item, quantity=quantity, item_total=item_total, cart=cart)
         item.save() 
         messages.success(request, "Item added to Cart")
@@ -104,7 +106,35 @@ def cart(request):
         item.delete()
         messages.success(request, "Item removed from Cart")
     elif request.method == 'POST' and 'next' in request.POST:
-        return redirect('home')
+        return redirect('checkout')
     images = ProductImages.objects.all()
     cartItems = Item.objects.filter(cart_id=request.session['user_id'])
     return render(request, 'cart.html', {'images':images, 'cartItems':cartItems})
+
+def checkout(request):
+    if request.method == 'POST':
+        shipping_address = request.POST['shipping_address']
+        shipping_option = request.POST['shipping_option']
+        shipping_fee = 0
+        order_total = 0
+        if shipping_option == 'Standard':
+            shipping_fee = 5
+        elif shipping_option == 'Priority':
+            shipping_fee = 10
+        elif shipping_option == 'Express':
+            shipping_fee = 15
+        cart = Cart.objects.get(pk=request.session['user_id'])
+        order_total = shipping_fee + cart.total
+        payment_option = request.POST['payment_option']
+        order = Order(cart=cart, shipping_address=shipping_address, shipping_option=shipping_option, payment_option=payment_option, shipping_fee=shipping_fee, order_total=order_total)
+        order.save()
+        if payment_option == 'Card':
+            accountname = request.POST['name']
+            cvv = request.POST['cvv']
+            expiry_date = request.POST['expdate'] + '-01'
+            if CardDetails.objects.filter(user_id=request.session['user_id']).exists():
+                CardDetails.objects.filter(user_id=request.session['user_id']).update(accountname=accountname, cvv=cvv, expiry_date=expiry_date)
+            else:
+                card = CardDetails(user_id=request.session['user_id'], accountname=accountname, cvv=cvv, expiry_date=expiry_date)
+                card.save()
+    return render(request, 'checkout.html')
