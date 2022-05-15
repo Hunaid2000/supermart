@@ -6,7 +6,7 @@ from supermartApp.models import Account, Product, ProductImages, Store, Cart, It
 def home(request):
     images = ProductImages.objects.all()
     if 'is_seller' in request.session and request.session['is_seller'] == 1:
-        images = ProductImages.objects.filter(product__store__seller_id=request.session['user_id'])  
+        images = ProductImages.objects.filter(product__store__seller_id=request.session['is_seller'])  
     return render(request, 'home.html', {'images':images})
 
 def logout(request):
@@ -23,8 +23,8 @@ def accounts(request):
         password = request.POST['password']
         is_seller = request.POST['is_seller']
         account = Account(name=name, email=email, password=password, is_seller=is_seller)
-        account.save()  
-        if is_seller == 0:
+        account.save()
+        if is_seller == 'False':
             cart = Cart(user=account, total=0)
             cart.save()
     elif request.method == 'POST' and 'login' in request.POST:
@@ -89,11 +89,11 @@ def productdetails(request, id):
     if request.method == 'POST':
         quantity = request.POST['quantity']  
         quantity = int(quantity)  
-        cart = Cart.objects.get(pk=request.session['user_id'])  
+        cart = Cart.objects.get(user_id=request.session['user_id'])  
         product_item = Product.objects.get(pk=id)
         item_total = quantity * product_item.price
         total = item_total + cart.total
-        Cart.objects.filter(pk=request.session['user_id']).update(total=total)
+        Cart.objects.filter(user_id=request.session['user_id']).update(total=total)
         item = Item(product=product_item, quantity=quantity, item_total=item_total, cart=cart)
         item.save() 
         messages.success(request, "Item added to Cart")
@@ -108,7 +108,8 @@ def cart(request):
     elif request.method == 'POST' and 'next' in request.POST:
         return redirect('checkout')
     images = ProductImages.objects.all()
-    cartItems = Item.objects.filter(cart_id=request.session['user_id'])
+    cart = Cart.objects.get(user_id=request.session['user_id'])
+    cartItems = Item.objects.filter(cart=cart)
     return render(request, 'cart.html', {'images':images, 'cartItems':cartItems})
 
 def checkout(request):
@@ -123,7 +124,7 @@ def checkout(request):
             shipping_fee = 10
         elif shipping_option == 'Express':
             shipping_fee = 15
-        cart = Cart.objects.get(pk=request.session['user_id'])
+        cart = Cart.objects.get(user_id=request.session['user_id'])
         order_total = shipping_fee + cart.total
         payment_option = request.POST['payment_option']
         order = Order(cart=cart, shipping_address=shipping_address, shipping_option=shipping_option, payment_option=payment_option, shipping_fee=shipping_fee, order_total=order_total)
