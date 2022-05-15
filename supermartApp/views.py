@@ -6,11 +6,12 @@ from supermartApp.models import Account, Product, ProductImages, Store, Cart, It
 def home(request):
     images = ProductImages.objects.all()
     if 'is_seller' in request.session and request.session['is_seller'] == 1:
-        images = ProductImages.objects.filter(product__store__seller_id=request.session['is_seller'])  
+        images = ProductImages.objects.filter(product__store__seller_id=request.session['user_id'])  
     return render(request, 'home.html', {'images':images})
 
 def logout(request):
     del request.session['user_id']
+    del request.session['is_seller']
     return redirect('home')
 
 def accounts(request):
