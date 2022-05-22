@@ -5,6 +5,17 @@ from supermartApp.models import Account, Product, ProductImages, Store, Cart, It
 
 def home(request):
     images = ProductImages.objects.all()
+    if request.method == 'POST' and 'sortby' in request.POST:
+        sortvar = request.POST['sort']
+        if sortvar == 'sortbyname':
+            images = ProductImages.objects.all().order_by('product__name')
+        elif sortvar == 'lowprice':
+            images = ProductImages.objects.all().order_by('product__price')
+        else:
+            images = ProductImages.objects.all().order_by('-product__price')
+    if request.method == 'POST' and 'search' in request.POST:
+        searchtext = request.POST['searchbar']
+        images = [img for img in images if searchtext.lower() in img.product.name.lower() or searchtext.lower() in img.product.description.lower()]
     if 'is_seller' in request.session and request.session['is_seller'] == 1:
         images = ProductImages.objects.filter(product__store__seller_id=request.session['user_id'])  
     return render(request, 'home.html', {'images':images})

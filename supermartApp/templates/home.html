@@ -21,6 +21,28 @@
     }
     </script>
     <h1 style="text-align: center; margin: 10px;">Products</h1>
+    <div class="prodDisplay">
+        <form class="prodFrom" method="post">
+            {% csrf_token %}
+            <label for="sort"><h1 style="text-align: center; margin: 10px; font-size: 15px;">Sort by:</h1></label>
+            <select name="sort" style="font-size: 15px;">
+                <option value="sortbyname">Name</option>
+                <option value="highprice">Price (High to Low)</option>
+                <option value="lowprice">Price (Low to High)</option>
+            </select>
+            <button class="home-button button" name="sortby">
+                <span class="home-text1 ">Sort</span>
+            </button>
+        </form>
+        
+        <form class="prodFrom" method="post">
+            {% csrf_token %}
+            <input name="searchbar" style="font-size: 15px; justify-content: center; align-self: center; border-bottom:1px solid #167A46; outline: none;" type="text" name="" id="Search" placeholder="Search"/>
+            <button class="home-button button" name="search">
+                <span class="home-text1 ">Search</span>
+            </button>
+        </form>
+    </div>
     {% if images %}
         <div style="display: flex;">
         {% for img in images %}           
