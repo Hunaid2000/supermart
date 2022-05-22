@@ -64,11 +64,15 @@
                     <p class="price">${{ p.price }}</p>
                     <form class="home-form" method="post">
                         {% csrf_token %}
-                        Quantity  <input name="quantity" type="number" value="1" min="1" max="100"/>
-                        {% if request.session.user_id %}
-                            <p><button>Add to Cart</button></p>
-                        {% else %}
+                        
+                        {% if not request.session.user_id %}
                             <p style="margin-top: 10px;">Login to add this product to Cart</p>
+                        {% else %}
+                            {% if not request.session.is_seller %} 
+                                Quantity  <input name="quantity" type="number" value="1" min="1" max="100"/>
+                                <p><button name="addtocart">Add to Cart</button></p>
+                                <p><button name="addtowishlist">Add to Wishlist</button></p>
+                            {% endif %}                    
                         {% endif %}
                     </form>
                 {% endfor %}

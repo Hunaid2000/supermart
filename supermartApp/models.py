@@ -50,3 +50,7 @@ class CardDetails(models.Model):
     accountname = models.CharField(max_length=100)
     cvv = models.IntegerField()
     expiry_date = models.DateField()
+
+class Wishlist(models.Model):
+    customer = models.ForeignKey(Account, on_delete=models.CASCADE)
+    product = models.ForeignKey(Product, on_delete=models.CASCADE)

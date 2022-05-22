@@ -17,6 +17,16 @@
         }
     </script>
 
+    {% if messages %}
+        {% for message in messages %}
+            <script>
+                window.onload = function(){
+                alert('{{ message }}')
+                }                            
+            </script>                        
+        {% endfor %}
+    {% endif %}
+    
     <div class="home-container">
         <h1 style="color: rgb(35, 31, 32); margin-top: 20px;">Checkout</h1>
         <div class="divcontainer">

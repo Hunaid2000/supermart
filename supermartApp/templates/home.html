@@ -6,6 +6,15 @@
 {% endblock head %}
 
 {% block content %}
+    {% if messages %}
+        {% for message in messages %}
+            <script>
+                window.onload = function(){
+                alert('{{ message }}')
+                }                            
+            </script>                        
+        {% endfor %}
+    {% endif %}
     <script >
     function selectImages() {
         let allbuttons = document.querySelectorAll('input[type=radio]');
@@ -25,7 +34,7 @@
         <form class="prodFrom" method="post">
             {% csrf_token %}
             <label for="sort"><h1 style="text-align: center; margin: 10px; font-size: 15px;">Sort by:</h1></label>
-            <select name="sort" style="font-size: 15px;">
+            <select name="sort" style="font-size: 15px; outline: none;">
                 <option value="sortbyname">Name</option>
                 <option value="highprice">Price (High to Low)</option>
                 <option value="lowprice">Price (Low to High)</option>
@@ -65,7 +74,7 @@
             {% ifchanged img.product_id %}
                 <h1>{{ img.product.name }}</h1>
                 <p class="price">${{ img.product.price }}</p>
-                <p><a href="/supermartApp/product/{{ img.product_id }}"><button>View</button></a></p>
+                <p><a href="/product/{{ img.product_id }}"><button>View</button></a></p>
                 </div>
             {% endifchanged %}                    
         {% endfor %}

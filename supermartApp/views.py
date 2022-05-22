@@ -1,10 +1,12 @@
 from django.shortcuts import render, redirect
 from django.contrib import messages
-from supermartApp.models import Account, Product, ProductImages, Store, Cart, Item, Order, CardDetails
-
+from supermartApp.models import Account, Product, ProductImages, Store, Cart, Item, Order, CardDetails, Wishlist
+from django.core.mail import send_mail
 
 def home(request):
     images = ProductImages.objects.all()
+    sortvar = None
+    searchtext = None
     if request.method == 'POST' and 'sortby' in request.POST:
         sortvar = request.POST['sort']
         if sortvar == 'sortbyname':
@@ -17,7 +19,16 @@ def home(request):
         searchtext = request.POST['searchbar']
         images = [img for img in images if searchtext.lower() in img.product.name.lower() or searchtext.lower() in img.product.description.lower()]
     if 'is_seller' in request.session and request.session['is_seller'] == 1:
-        images = ProductImages.objects.filter(product__store__seller_id=request.session['user_id'])  
+        if sortvar == 'sortbyname':
+            images = ProductImages.objects.filter(product__store__seller_id=request.session['user_id']).order_by('product__name')
+        elif sortvar == 'lowprice':
+            images = ProductImages.objects.filter(product__store__seller_id=request.session['user_id']).order_by('product__price')
+        elif sortvar == 'highprice':
+            images = ProductImages.objects.filter(product__store__seller_id=request.session['user_id']).order_by('-product__price')
+        elif searchtext:
+            images = [img for img in images if searchtext.lower() in img.product.name.lower() or searchtext.lower() in img.product.description.lower()]
+        else:
+            images = ProductImages.objects.filter(product__store__seller_id=request.session['user_id'])  
     return render(request, 'home.html', {'images':images})
 
 def logout(request):
@@ -98,7 +109,7 @@ def addproduct(request):
 def productdetails(request, id):
     product = Product.objects.filter(pk=id)
     images = ProductImages.objects.filter(product_id=id)
-    if request.method == 'POST':
+    if request.method == 'POST' and 'addtocart' in request.POST:
         quantity = request.POST['quantity']  
         quantity = int(quantity)  
         cart = Cart.objects.get(user_id=request.session['user_id'])  
@@ -109,6 +120,14 @@ def productdetails(request, id):
         item = Item(product=product_item, quantity=quantity, item_total=item_total, cart=cart)
         item.save() 
         messages.success(request, "Item added to Cart")
+    if request.method == 'POST' and 'addtowishlist' in request.POST:        
+        if(Wishlist.objects.filter(customer_id=request.session['user_id'], product=product[0])):
+            messages.error(request, 'Item already in Wishlist')
+            return render(request, 'productdetails.html', {'product':product, 'images':images})
+        else:
+            wishlist = Wishlist(customer_id=request.session['user_id'], product=product[0])
+            wishlist.save()
+        messages.success(request, "Item added to Wishlist")
     return render(request, 'productdetails.html', {'product':product, 'images':images})
 
 def cart(request):
@@ -150,4 +169,22 @@ def checkout(request):
             else:
                 card = CardDetails(user_id=request.session['user_id'], accountname=accountname, cvv=cvv, expiry_date=expiry_date)
                 card.save()
+        messages.success(request, "Information saved Successfully")
     return render(request, 'checkout.html')
+
+def wishlist(request):
+    product_id = None
+    if request.method == 'POST' and 'delete' in request.POST:
+        product_id = request.POST['delete'] 
+        item = Wishlist.objects.get(product_id=product_id)
+        item.delete()
+        messages.success(request, "Item removed from Wishlist")
+    if 'is_seller' in request.session and request.session['is_seller'] == 1:
+        sellerItems = Wishlist.objects.filter(product__store__seller=request.session['user_id'])
+        recipients = [item.customer.email for item in sellerItems]
+        send_mail('Product Reminder', 'Dear Customer,\n The Product you had wished for is back in stock.\nRegards', 'sellertest00@gmail.com', recipients, fail_silently=False)
+        messages.success(request, "Reminders successfully sent")
+        return redirect('home')
+    images = ProductImages.objects.all()
+    wishlistItems = Wishlist.objects.filter(customer_id=request.session['user_id'])
+    return render(request, 'wishlist.html', {'images':images, 'wishlistItems':wishlistItems})
