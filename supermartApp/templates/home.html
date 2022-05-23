@@ -46,7 +46,7 @@
         
         <form class="prodFrom" method="post">
             {% csrf_token %}
-            <input name="searchbar" style="font-size: 15px; justify-content: center; align-self: center; border-bottom:1px solid #167A46; outline: none;" type="text" name="" id="Search" placeholder="Search"/>
+            <input name="searchbar" style="font-size: 15px; justify-content: center; align-self: center; border-bottom:1px solid #167A46; outline: none;" type="text" maxlength="255" id="Search" placeholder="Search"/>
             <button class="home-button button" name="search">
                 <span class="home-text1 ">Search</span>
             </button>

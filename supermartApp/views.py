@@ -7,6 +7,7 @@ def home(request):
     images = ProductImages.objects.all()
     sortvar = None
     searchtext = None
+    # sort the products as demanded
     if request.method == 'POST' and 'sortby' in request.POST:
         sortvar = request.POST['sort']
         if sortvar == 'sortbyname':
@@ -15,9 +16,11 @@ def home(request):
             images = ProductImages.objects.all().order_by('product__price')
         else:
             images = ProductImages.objects.all().order_by('-product__price')
+    # search the required product by comparing titles and descriptions
     if request.method == 'POST' and 'search' in request.POST:
         searchtext = request.POST['searchbar']
         images = [img for img in images if searchtext.lower() in img.product.name.lower() or searchtext.lower() in img.product.description.lower()]
+    # For seller his own products will be displayed
     if 'is_seller' in request.session and request.session['is_seller'] == 1:
         if sortvar == 'sortbyname':
             images = ProductImages.objects.filter(product__store__seller_id=request.session['user_id']).order_by('product__name')
@@ -32,11 +35,13 @@ def home(request):
     return render(request, 'home.html', {'images':images})
 
 def logout(request):
+    # logout by deleting key from django session
     del request.session['user_id']
     del request.session['is_seller']
     return redirect('home')
 
 def accounts(request):
+    # the sign up checks for the validity before inserting information to the database
     if request.method == 'POST' and 'signup' in request.POST:
         name = request.POST['name']
         email = request.POST['email']
@@ -50,6 +55,7 @@ def accounts(request):
         if is_seller == 'False':
             cart = Cart(user=account, total=0)
             cart.save()
+    # the login checks for the validity before user is made to login
     elif request.method == 'POST' and 'login' in request.POST:
         email = request.POST['email']
         password = request.POST['password']
@@ -64,6 +70,7 @@ def accounts(request):
     return render(request, 'accounts.html')
 
 def registerstore(request):
+    # register store checks for data validity and seller validity before inserting to database
     if request.method == 'POST':
         store_name = request.POST['store_name']
         contact = request.POST['contact']
@@ -76,6 +83,7 @@ def registerstore(request):
         store.save()  
     return render(request, 'registerstore.html')
 
+# addproduct checks for data validity before inserting product to database
 def addproduct(request):
     if request.method == 'POST':
         name = request.POST['name']
@@ -106,6 +114,7 @@ def addproduct(request):
     stores = Store.objects.filter(seller_id=request.session['user_id'])
     return render(request, 'addproduct.html', {'stores':stores})
 
+# productdetails displays the product information along with its images and allows to add product to cart and wishlist
 def productdetails(request, id):
     product = Product.objects.filter(pk=id)
     images = ProductImages.objects.filter(product_id=id)
@@ -130,6 +139,7 @@ def productdetails(request, id):
         messages.success(request, "Item added to Wishlist")
     return render(request, 'productdetails.html', {'product':product, 'images':images})
 
+# cart is used to display all products in user's cart and delete product from cart
 def cart(request):
     if request.method == 'POST' and 'delete' in request.POST:
         product_id = request.POST['delete'] 
@@ -143,6 +153,7 @@ def cart(request):
     cartItems = Item.objects.filter(cart=cart)
     return render(request, 'cart.html', {'images':images, 'cartItems':cartItems})
 
+# checkout takes the information about payment and shipping options validates it before inserting to database
 def checkout(request):
     if request.method == 'POST':
         shipping_address = request.POST['shipping_address']
@@ -172,6 +183,7 @@ def checkout(request):
         messages.success(request, "Information saved Successfully")
     return render(request, 'checkout.html')
 
+# wishlist is used to view the products in wishlist and delete it from wishlist
 def wishlist(request):
     product_id = None
     if request.method == 'POST' and 'delete' in request.POST:
