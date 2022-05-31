@@ -55,6 +55,7 @@ def accounts(request):
         if is_seller == 'False':
             cart = Cart(user=account, total=0)
             cart.save()
+        messages.success(request, "Account Successfully Created")
     # the login checks for the validity before user is made to login
     elif request.method == 'POST' and 'login' in request.POST:
         email = request.POST['email']
@@ -80,7 +81,8 @@ def registerstore(request):
             messages.error(request, 'This Store name is already in use')
             return redirect('registerstore')
         store = Store(store_name=store_name, contact=contact, location=location, seller=seller)
-        store.save()  
+        store.save()
+        messages.success(request, "Store Successfully Created")  
     return render(request, 'registerstore.html')
 
 # addproduct checks for data validity before inserting product to database
@@ -109,8 +111,8 @@ def addproduct(request):
         product.save()  
         for img in images:
             productImage = ProductImages(image=img, product=product)
-            print(productImage)
             productImage.save()
+        messages.success(request, "Product Successfully Added")
     stores = Store.objects.filter(seller_id=request.session['user_id'])
     return render(request, 'addproduct.html', {'stores':stores})
 
@@ -145,6 +147,9 @@ def cart(request):
         product_id = request.POST['delete'] 
         item = Item.objects.get(product_id=product_id)
         item.delete()
+        cart = Cart.objects.get(user_id=request.session['user_id'])
+        total = cart.total - item.item_total
+        Cart.objects.filter(user_id=request.session['user_id']).update(total=total)
         messages.success(request, "Item removed from Cart")
     elif request.method == 'POST' and 'next' in request.POST:
         return redirect('checkout')

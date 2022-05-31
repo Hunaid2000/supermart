@@ -16,6 +16,15 @@
       }
     }
   </script>
+  {% if messages %}
+    {% for message in messages %}
+        <script>
+            window.onload = function(){
+            alert('{{ message }}')
+            }                            
+        </script>                        
+    {% endfor %}
+  {% endif %}
 
   <div class="home-container">
     <div class="divcontainer">
@@ -35,6 +44,7 @@
             placeholder="Name"
             class="home-textinput2 input"
             maxlength="50"
+            required
           />
           <input
             type="text"
@@ -42,6 +52,7 @@
             placeholder="Brand"
             class="home-textinput2 input"
             maxlength="50"
+            required
           />
           <input
             type="number"
@@ -50,6 +61,7 @@
             class="home-textinput2 input"
             step="any"
             style="padding-right: 0px;"
+            required
           />
           <input
             type="number"
@@ -57,13 +69,14 @@
             placeholder="Total Stock"
             class="home-textinput2 input"
             style="padding-right: 0px;"
+            required
           />
           <p style="text-align:center;">
             Does your product come in multiple sizes?
           </p>
           <div class="radiobuttons">
             <div>
-              <input type="radio" id="no" name="size" value="False" onclick="checkRadioButtons();" />                
+              <input type="radio" id="no" name="size" value="False" onclick="checkRadioButtons();" required />                
               <label for="no">No</label>
             </div>
             <div>
@@ -100,6 +113,7 @@
             placeholder="Description"
             class="home-textinput2 input"
             maxlength="255"
+            required
           />
           <label for="imglabel" style="text-align: center; margin-bottom: 4px;">Upload Product Images</label>
           <input required name="images" type="file" multiple class="form-control-file" id="imglabel" style="border:none; text-align-last: center"/>              
